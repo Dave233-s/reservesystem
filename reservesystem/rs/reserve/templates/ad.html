@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>管理系统</title>
+</head>
+<body>
+<div>
+<table align="center" border="1px" cellpadding="20px" cellspacing="0">
+    <thead> <th>id</th> <th>手机号码</th> <th>服务</th> <th>是否提上日程</th> <th>是否删除</th> </thead>
+    <tbody id="tb"></tbody>
+</table>
+</div>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+<script>
+    $.ajax({
+        url:'/get_r',
+        success:function (dat) {
+            var str = "";
+            for (var i in dat.data) {
+                tr = $("<tr></tr>");
+                $("#tb").append(tr);
+                tr.append("<td class=idd>"+ dat.data[i].id +"</td>");
+                tr.append("<td>"+ dat.data[i].phone +"</td>");
+                tr.append("<td>"+ dat.data[i].service_type +"</td>");
+                if (dat.data[i].to_agenda==false) {
+                    tr.append("<td><button class=ag>提上日程</button></td>");
+                    tr.append("<td><button class=del>删除</button></td>");
+                    }
+                else {
+                    tr.append("<td><p>已经提上日程</p></td>")
+                    tr.append("<td></td>")
+                    }
+
+
+                }
+                $(".ag").click(function () {
+                    var idd = $(this).parent().prevAll("td.idd").text();
+                    $(this).parent().next().remove();
+                    $(this).parent().parent().append("<td></td>");
+                    $(this).parent().append("<p>已经提上日程</p>");
+                    $(this).remove();
+                    var json = {
+                        id:idd
+                    };
+                    $.ajax({
+                        url:'/post_status/',
+                        type:'post',
+                        data:json,
+                        dataType:'json',
+
+                        })
+                })
+
+
+                $(".del").click(function () {
+
+                    var idd = $(this).parent().prevAll("td.idd").text();
+                    $(this).parent().parent().remove();
+                    var json = {
+                        id:idd
+                        };
+                    console.log(json);
+                    $.ajax({
+                        url:'/delete_r/',
+                        type:'post',
+                        data:json,
+                        dataType:'json',
+                        success:function() {
+                            window.location.reload();
+                            }
+                        })
+                })
+
+        }
+    })
+
+
+</script>
+</html>

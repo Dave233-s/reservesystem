@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <meta charset="UTF-8">
+    <title>查询</title>
+</head>
+<body>
+<div>
+    <form>
+        输入手机号码:<input type="text" id="phone"><br>
+    </form>
+    <button onclick="search()">查询</button>
+</div>
+
+<div>
+    <table align="center" border="1px" cellpadding="20px" cellspacing="0">
+        <thead>
+        <th>id</th> <th>手机号码</th> <th>服务</th> <th>状态</th> <th>是否删除</th>
+        </thead>
+        <tbody id="tb"></tbody>
+    </table>
+
+</div>
+</body>
+
+<script>
+    function search() {
+        var phone = $("#phone").val();
+        $.ajax({
+            url:'/post_search/',
+            data:{
+                'phone':phone
+            },
+            dataType:'json',
+            type:'post',
+            success:function(dat) {
+                $("#tb").children().remove();
+                for (var i in dat.data) {
+                    tr = $("<tr></tr>");
+                    $("#tb").append(tr);
+                    tr.append("<td class=idd>"+ dat.data[i].id +"</td>");
+                    tr.append("<td>"+ dat.data[i].phone +"</td>");
+                    tr.append("<td>"+ dat.data[i].service_type +"</td>");
+                    if (dat.data[i].to_agenda==false) {
+                        tr.append("<td>等待中</td>");
+                        }
+                    else {
+                       tr.append("<td>已经提上日程</td>");
+                        }
+                    tr.append("<td><button class=del>删除</button></td>");
+                    }
+                    $(".del").click(function () {
+
+                    var idd = $(this).parent().prevAll("td.idd").text();
+                    $(this).parent().parent().remove();
+                    console.log("1111");
+                    var json = {
+                        id:idd
+                        };
+                    console.log(json);
+                    $.ajax({
+                        url:'/delete_r/',
+                        type:'post',
+                        data:json,
+                        dataType:'json',
+                        })
+                })
+            }
+        })
+
+
+    }
+
+</script>
+</html>

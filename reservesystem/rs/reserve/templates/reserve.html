@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <meta charset="UTF-8">
+    <title>预约</title>
+</head>
+<body>
+<div>
+    <form>
+        手机号:<input type="text" id="phone"> <br>
+        维修类型:<input type="text" id="type"> <br>
+    </form>
+    <button onclick="submit()">提交</button>
+
+</div>
+</body>
+
+<script>
+    function submit() {
+        var data = {
+            'phone' : $("#phone").val(),
+            'service_type' : $("#type").val()
+            };
+        $.ajax({
+            url:'/put_r/',
+            type:'post',
+            data:data,
+            dataType:'json',
+            success: function() {
+                alert("提交成功");
+                }
+            })
+        }
+</script>
+</html>
